@@ -1,22 +1,3 @@
-'''
- The 24 Game Player
- 
- Given any four digits in the range 1 to 9, which may have repetitions,
- Using just the +, -, *, and / operators; and the possible use of
- brackets, (), show how to make an answer of 24.
- 
- An answer of "q"  will quit the game.
- An answer of "!"  will generate a new set of four digits.
- An answer of "!!" will ask you for a new set of four digits.
- An answer of "?"  will compute an expression for the current digits.
- 
- Otherwise you are repeatedly asked for an expression until it evaluates to 24
- 
- Note: you cannot form multiple digit numbers from the supplied digits,
- so an answer of 12+12 when given 1, 2, 2, and 1 would not be allowed.
- 
-'''
- 
 from   __future__ import division, print_function
 from   itertools  import permutations, combinations, product, \
                          chain
@@ -33,11 +14,9 @@ else:
  
  
 def choose4():
-    'four random digits >0 as characters'
     return [str(random.randint(1,9)) for i in range(4)]
  
 def ask4():
-    'get four random digits >0 from the player'
     digits = ''
     while len(digits) != 4 or not all(d in '123456789' for d in digits):
         digits = input('Enter the digits to solve for: ')
@@ -61,41 +40,19 @@ def check(answer, digits):
     return ok
  
 def solve(digits):
-    """\
-    >>> for digits in '3246 4788 1111 123456 1127 3838'.split():
-            solve(list(digits))
- 
- 
-    Solution found: 2 + 3 * 6 + 4
-    '2 + 3 * 6 + 4'
-    Solution found: ( 4 + 7 - 8 ) * 8
-    '( 4 + 7 - 8 ) * 8'
-    No solution found for: 1 1 1 1
-    '!'
-    Solution found: 1 + 2 + 3 * ( 4 + 5 ) - 6
-    '1 + 2 + 3 * ( 4 + 5 ) - 6'
-    Solution found: ( 1 + 2 ) * ( 1 + 7 )
-    '( 1 + 2 ) * ( 1 + 7 )'
-    Solution found: 8 / ( 3 - 8 / 3 )
-    '8 / ( 3 - 8 / 3 )'
-    >>> """
     digilen = len(digits)
-    # length of an exp without brackets 
     exprlen = 2 * digilen - 1
-    # permute all the digits
     digiperm = sorted(set(permutations(digits)))
-    # All the possible operator combinations
     opcomb   = list(product('+-*/', repeat=digilen-1))
-    # All the bracket insertion points:
     brackets = ( [()] + [(x,y)
                          for x in range(0, exprlen, 2)
                          for y in range(x+4, exprlen+2, 2)
                          if (x,y) != (0,exprlen+1)]
-                 + [(0, 3+1, 4+2, 7+3)] ) # double brackets case
+                 + [(0, 3+1, 4+2, 7+3)] )
     for d in digiperm:
         for ops in opcomb:
             if '/' in ops:
-                d2 = [('F(%s)' % i) for i in d] # Use Fractions for accuracy
+                d2 = [('F(%s)' % i) for i in d]
             else:
                 d2 = d
             ex = list(chain.from_iterable(zip_longest(d2, ops, fillvalue='')))
@@ -160,7 +117,6 @@ def main():
             print ("Wrong answer: '%s'" % answer)
         else:
             if '/' in answer:
-                # Use Fractions for accuracy in divisions
                 answer = ''.join( (('F(%s)' % char) if char in '123456789' else char)
                                   for char in answer )
             ans = eval(answer)
