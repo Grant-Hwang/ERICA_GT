@@ -1,5 +1,3 @@
-'out 카운트가 이상했던점 수정'
-
 from   __future__ import division, print_function
 from   itertools  import permutations, combinations, product, \
                          chain
